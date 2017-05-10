@@ -10,6 +10,9 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface RemotePlayer ()
+{
+    BOOL _isUserPause;
+}
 @property (nonatomic, strong) AVPlayer *play;
 
 @end
@@ -35,9 +38,24 @@ static RemotePlayer *_player;
 }
 - (void)playWithURL:(NSURL *)url
 {
+    NSURL *currentUrl = [(AVURLAsset *)self.play.currentItem.asset URL];
+    if ([url isEqual:currentUrl]) {
+        NSLog(@"当前任务已经存在");
+        [self resume];
+        return;
+    }
+    
+    
+    
     _url = url;
     // 资源的请求
     AVURLAsset *ass = [AVURLAsset assetWithURL:url];
+    
+    
+    if (self.play.currentItem) {
+        [self removeObserve];
+    }
+    
     
     // 资源的组织
     AVPlayerItem *Item = [AVPlayerItem playerItemWithAsset:ass];
@@ -45,11 +63,14 @@ static RemotePlayer *_player;
     // 当资源的组织者告诉我们资源准备完毕播放
     // AVPlayerItemStatus status
     [Item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    [Item addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:NSKeyValueObservingOptionNew context:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playEnd) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playInterupt) name:AVPlayerItemPlaybackStalledNotification object:nil];
     // 创建一个播放器
     self.play = [AVPlayer playerWithPlayerItem:Item];
     
-    [self.play play];
+
     
     
 }
@@ -57,15 +78,31 @@ static RemotePlayer *_player;
 - (void)pause
 {
     [self.play pause];
+    _isUserPause = YES;
+    
+    if (self.play) {
+        self.state = RemoteAudioPlayerStatePause;
+    }
+    
 }
 - (void)resume
 {
     [self.play play];
+    _isUserPause = NO;
+    // 当前播放器存在并且数据组织者里面的数据准备已经足够播放
+    if (self.play&&self.play.currentItem.playbackLikelyToKeepUp) {
+         self.state = RemoteAudioPlayerStatePlaying;
+    }
+   
 }
 - (void)stop
 {
     [self.play pause];
     self.play = nil;
+    
+    if (self.play) {
+        self.state = RemoteAudioPlayerStateStopped;
+    }
 }
 
 
@@ -100,6 +137,7 @@ static RemotePlayer *_player;
 //    self.play.currentItem.currentTime
     
     
+ 
     
     NSTimeInterval playTimeSec = self.totalTime * progress;
     CMTime currentTime = CMTimeMake(playTimeSec, 1);
@@ -158,6 +196,8 @@ static RemotePlayer *_player;
 {
     return [NSString stringWithFormat:@"%02zd:%02zd",(int)self.totalTime/60,(int)self.totalTime%60];
 }
+
+
 #pragma mark --数据事件
 - (NSTimeInterval)totalTime
 {
@@ -201,16 +241,65 @@ static RemotePlayer *_player;
     return loadTimeSec/self.totalTime;
 }
 
+- (void)setState:(RemoteAudioPalyerState)state
+{
+    _state = state;
+    // 告知外界相关事件通知外界
+   
+}
+
+- (void)removeObserve
+{
+    [self.play.currentItem removeObserver:self forKeyPath:@"status" context:nil];
+   [self.play.currentItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp" context:nil]; // playbackLikelyToKeepUp
+}
+
+- (void)playEnd
+{
+    NSLog(@"播放完成");
+    self.state = RemoteAudioPlayerStateStopped;
+}
+- (void)playInterupt
+{
+    // 来电话。资源加载跟不上
+    NSLog(@"播放打断");
+    self.state = RemoteAudioPlayerStatePause;
+}
+
+#pragma mark -- KVO
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"statue"]) {
+    if ([keyPath isEqualToString:@"status"]) { // 开始播放
         AVPlayerItemStatus status = [change[NSKeyValueChangeNewKey] integerValue];
         
         if (status == AVPlayerItemStatusReadyToPlay) {
-            NSLog(@"资源准备完毕");
-            [self.play play];
+            NSLog(@"资源准备完毕,准备播放");
+            [self resume];
+            
         } else {
             NSLog(@"状态未知");
+            self.state = RemoteAudioPlayerStateFaild;
+        }
+        
+    } else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) { // 播放过程中
+        
+//        self.play.currentItem.playbackLikelyToKeepUp
+        BOOL ptk = [change[NSKeyValueChangeNewKey] boolValue];
+        
+        if (ptk) {
+            NSLog(@"当前资源已经准备的足够播放了");
+//            [self resume];
+            // 用户的手动暂停的优先级最高
+            
+            if (!_isUserPause) {
+                [self resume];
+            } else {
+            
+            }
+            
+        } else{
+            NSLog(@"资源还不够，正在记载过程中");
+            self.state = RemoteAudioPlayerStateLoading;
         }
         
     }

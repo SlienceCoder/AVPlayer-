@@ -68,6 +68,7 @@
 
 - (void)update
 {
+    NSLog(@"-------------------||%ld",(long)[RemotePlayer shareInstance].state);
   
     self.playtime.text = [[RemotePlayer shareInstance] currentTimeFormat];;
     self.totaltime.text = [[RemotePlayer shareInstance] totalTimeFormat];;

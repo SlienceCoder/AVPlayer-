@@ -8,6 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+// 播放器的状态
+typedef NS_ENUM(NSInteger, RemoteAudioPalyerState) {
+
+    RemoteAudioPlayerStateUnkonwn = 0, // 未知
+    RemoteAudioPlayerStateLoading = 1, // 正在加载
+    RemoteAudioPlayerStatePlaying = 2, // 正在播放
+    RemoteAudioPlayerStateStopped = 3, // 停止
+    RemoteAudioPlayerStatePause = 4, // 暂停
+    RemoteAudioPlayerStateFaild = 5 // 失败
+    
+};
+
 @interface RemotePlayer : NSObject
 + (instancetype)shareInstance;
 - (void)playWithURL:(NSURL *)url;
@@ -35,6 +47,9 @@
 @property (nonatomic, assign) BOOL muted;
 @property (nonatomic, assign) float volume;
 @property (nonatomic, assign) float rate;
+
+@property (nonatomic, assign, readonly) RemoteAudioPalyerState state; // 更改状态
+
 
 
 @end
