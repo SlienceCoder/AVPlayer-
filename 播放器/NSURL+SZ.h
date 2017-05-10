@@ -10,4 +10,6 @@
 
 @interface NSURL (SZ)
 - (NSURL *)steamingURL;
+- (NSURL *)httpURL;
+
 @end

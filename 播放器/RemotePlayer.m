@@ -43,7 +43,7 @@ static RemotePlayer *_player;
 - (void)playWithURL:(NSURL *)url isCache:(BOOL)cache
 {
     NSURL *currentUrl = [(AVURLAsset *)self.play.currentItem.asset URL];
-    if ([url isEqual:currentUrl]) {
+    if ([url isEqual:currentUrl]||[[url steamingURL] isEqual:currentUrl]) {
         NSLog(@"当前任务已经存在");
         [self resume];
         return;
