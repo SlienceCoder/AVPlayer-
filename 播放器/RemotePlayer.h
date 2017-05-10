@@ -22,7 +22,7 @@ typedef NS_ENUM(NSInteger, RemoteAudioPalyerState) {
 
 @interface RemotePlayer : NSObject
 + (instancetype)shareInstance;
-- (void)playWithURL:(NSURL *)url;
+- (void)playWithURL:(NSURL *)url isCache:(BOOL)cache;
 - (void)pause;
 - (void)resume;
 - (void)stop;

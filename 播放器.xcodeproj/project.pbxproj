@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E7259B2B1EC2EB5C00773AEE /* RemoteResourceLoaderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7259B2A1EC2EB5C00773AEE /* RemoteResourceLoaderDelegate.m */; };
+		E7259B2E1EC2ED7E00773AEE /* NSURL+SZ.m in Sources */ = {isa = PBXBuildFile; fileRef = E7259B2D1EC2ED7E00773AEE /* NSURL+SZ.m */; };
 		E7EC943A1EC19D2D00DF55C1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E7EC94391EC19D2D00DF55C1 /* main.m */; };
 		E7EC943D1EC19D2D00DF55C1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E7EC943C1EC19D2D00DF55C1 /* AppDelegate.m */; };
 		E7EC94401EC19D2D00DF55C1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E7EC943F1EC19D2D00DF55C1 /* ViewController.m */; };
@@ -17,6 +19,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E7259B291EC2EB5C00773AEE /* RemoteResourceLoaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteResourceLoaderDelegate.h; sourceTree = "<group>"; };
+		E7259B2A1EC2EB5C00773AEE /* RemoteResourceLoaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteResourceLoaderDelegate.m; sourceTree = "<group>"; };
+		E7259B2C1EC2ED7E00773AEE /* NSURL+SZ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+SZ.h"; sourceTree = "<group>"; };
+		E7259B2D1EC2ED7E00773AEE /* NSURL+SZ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+SZ.m"; sourceTree = "<group>"; };
 		E7EC94351EC19D2D00DF55C1 /* 播放器.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "播放器.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7EC94391EC19D2D00DF55C1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E7EC943B1EC19D2D00DF55C1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -61,8 +67,12 @@
 		E7EC94371EC19D2D00DF55C1 /* 播放器 */ = {
 			isa = PBXGroup;
 			children = (
+				E7259B291EC2EB5C00773AEE /* RemoteResourceLoaderDelegate.h */,
+				E7259B2A1EC2EB5C00773AEE /* RemoteResourceLoaderDelegate.m */,
 				E7EC945E1EC1CF9500DF55C1 /* RemotePlayer.h */,
 				E7EC945F1EC1CF9500DF55C1 /* RemotePlayer.m */,
+				E7259B2C1EC2ED7E00773AEE /* NSURL+SZ.h */,
+				E7259B2D1EC2ED7E00773AEE /* NSURL+SZ.m */,
 				E7EC943B1EC19D2D00DF55C1 /* AppDelegate.h */,
 				E7EC943C1EC19D2D00DF55C1 /* AppDelegate.m */,
 				E7EC943E1EC19D2D00DF55C1 /* ViewController.h */,
@@ -156,10 +166,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7259B2B1EC2EB5C00773AEE /* RemoteResourceLoaderDelegate.m in Sources */,
 				E7EC94401EC19D2D00DF55C1 /* ViewController.m in Sources */,
 				E7EC943D1EC19D2D00DF55C1 /* AppDelegate.m in Sources */,
 				E7EC94601EC1CF9500DF55C1 /* RemotePlayer.m in Sources */,
 				E7EC943A1EC19D2D00DF55C1 /* main.m in Sources */,
+				E7259B2E1EC2ED7E00773AEE /* NSURL+SZ.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +330,7 @@
 				E7EC944E1EC19D2D00DF55C1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

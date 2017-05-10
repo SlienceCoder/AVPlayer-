@@ -8,12 +8,16 @@
 
 #import "RemotePlayer.h"
 #import <AVFoundation/AVFoundation.h>
+#import "RemoteResourceLoaderDelegate.h"
+#import "NSURL+SZ.h"
 
 @interface RemotePlayer ()
 {
     BOOL _isUserPause;
 }
 @property (nonatomic, strong) AVPlayer *play;
+
+@property (nonatomic, strong) RemoteResourceLoaderDelegate *remoteResourcedelegate;
 
 @end
 
@@ -36,7 +40,7 @@ static RemotePlayer *_player;
     }
     return _player;
 }
-- (void)playWithURL:(NSURL *)url
+- (void)playWithURL:(NSURL *)url isCache:(BOOL)cache
 {
     NSURL *currentUrl = [(AVURLAsset *)self.play.currentItem.asset URL];
     if ([url isEqual:currentUrl]) {
@@ -48,9 +52,17 @@ static RemotePlayer *_player;
     
     
     _url = url;
+    if (cache) {
+        url = [url steamingURL];
+    }
+    
     // 资源的请求
     AVURLAsset *ass = [AVURLAsset assetWithURL:url];
     
+    // 关于网络音频的请求，是通过这个对象，调用代理的相关方法，进行加载的
+    // 拦截加载的请求，只需要重新修改他的代理方法就可以
+    self.remoteResourcedelegate = [RemoteResourceLoaderDelegate new];
+    [ass.resourceLoader setDelegate:self.remoteResourcedelegate queue:dispatch_get_main_queue()];
     
     if (self.play.currentItem) {
         [self removeObserve];
@@ -251,7 +263,7 @@ static RemotePlayer *_player;
 - (void)removeObserve
 {
     [self.play.currentItem removeObserver:self forKeyPath:@"status" context:nil];
-   [self.play.currentItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp" context:nil]; // playbackLikelyToKeepUp
+    [self.play.currentItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp" context:nil]; // playbackLikelyToKeepUp
 }
 
 - (void)playEnd
