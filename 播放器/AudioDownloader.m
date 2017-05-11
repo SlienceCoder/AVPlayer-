@@ -14,12 +14,8 @@
 @interface AudioDownloader () <NSURLSessionDataDelegate>
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSOutputStream *outputStream;
-@property (nonatomic, assign) long long totalSize;
 
 @property (nonatomic, strong) NSURL *url;
-
-
-
 @end
 
 @implementation AudioDownloader
@@ -37,6 +33,7 @@
 - (void)downloadWithURL:(NSURL *)url offset:(long long)offset
 {
     self.url = url;
+    self.offset = offset;
     [self cancelAndClean];
     
     // 请求某以区间的数据
@@ -66,6 +63,10 @@
     
     self.totalSize = [[[httpResponse.allHeaderFields[@"Content-Range"] componentsSeparatedByString:@"/"] lastObject] longLongValue];
     
+    
+    self.mineType = response.MIMEType;
+    
+    
     self.outputStream = [NSOutputStream outputStreamToFileAtPath:[RemoteAudioFile tempFilePath:self.url] append:YES];
     [self.outputStream open];
     
@@ -76,6 +77,11 @@
 {
     self.loadingSize += data.length;
     [self.outputStream write:data.bytes maxLength:data.length];
+    
+    // 通知外界
+    if ([self.delegate respondsToSelector:@selector(downLoading)]) {
+        [self.delegate downLoading];
+    }
 }
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {

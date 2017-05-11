@@ -40,8 +40,9 @@
 }
 
 - (IBAction)play:(id)sender {
-    
-    [[RemotePlayer shareInstance] playWithURL:[NSURL URLWithString:@"http://audio.xmcdn.com/group23/M04/63/C5/wKgJNFg2qdLCziiYAGQxcTOSBEw402.m4a"] isCache:YES];
+    // http://120.25.226.186:32812/resources/videos/minion_01.mp4
+    // http://audio.xmcdn.com/group23/M04/63/C5/wKgJNFg2qdLCziiYAGQxcTOSBEw402.m4a
+    [[RemotePlayer shareInstance] playWithURL:[NSURL URLWithString:@"http://120.25.226.186:32812/resources/videos/minion_01.mp4"] isCache:YES];
 }
 - (IBAction)pause:(id)sender {
     [[RemotePlayer shareInstance] pause];
